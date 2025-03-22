@@ -1,4 +1,4 @@
-package com.HieuVo.Employee.Recruitment.Management;
+package com.HieuVo.Employee_Recruitment_Management;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
