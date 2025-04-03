@@ -1,11 +1,12 @@
 package com.HieuVo.Employee_Recruitment_Management.controller;
 
-import com.HieuVo.Employee_Recruitment_Management.domain.User;
+import com.HieuVo.Employee_Recruitment_Management.Model.User;
 
 import com.HieuVo.Employee_Recruitment_Management.service.Error.IdInvalidException;
 import com.HieuVo.Employee_Recruitment_Management.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,14 +16,16 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
+private final PasswordEncoder passwordEncoder;
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     @PostMapping()
     public ResponseEntity<User> createUser(@RequestBody User user) {
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.handleCreateUser(user));
     }
 

@@ -1,6 +1,6 @@
 package com.HieuVo.Employee_Recruitment_Management.service;
 
-import com.HieuVo.Employee_Recruitment_Management.domain.User;
+import com.HieuVo.Employee_Recruitment_Management.Model.User;
 import com.HieuVo.Employee_Recruitment_Management.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,7 @@ public class UserService {
     }
 
     public User handleCreateUser(User user) {
+
         return this.userRepository.save(user);
     }
 
@@ -39,11 +40,15 @@ public class UserService {
     public User handleUpdateUser(User user) {
         User currentUser = fetchtUserById(user.getId());
         if (currentUser != null) {
-            currentUser.setUserName(user.getUserName());
+            currentUser.setUsername(user.getUsername());
             currentUser.setPassword(user.getPassword());
-            currentUser.setName(user.getName());
+            currentUser.setEmail(user.getEmail());
 
         }
         return this.userRepository.save(currentUser);
+    }
+
+    public User handlerGetUserbyUserName(String username) {
+        return this.userRepository.findByUsername(username);
     }
 }
