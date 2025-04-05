@@ -10,10 +10,10 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collections;
 
 @Component("userDetailsService")
-public class UserDetailCustom implements UserDetailsService {
+public class UserDetailsCustom implements UserDetailsService {
     private final UserService userService;
 
-    public UserDetailCustom(UserService userService) {
+    public UserDetailsCustom(UserService userService) {
         this.userService = userService;
     }
 
@@ -21,6 +21,8 @@ public class UserDetailCustom implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         com.HieuVo.Employee_Recruitment_Management.Model.User user = this.userService.handlerGetUserbyUserName(username);
+        if (user == null)
+            throw new UsernameNotFoundException("User not found with username: " + username);
         return new User(
                 user.getUsername(),
                 user.getPassword(),

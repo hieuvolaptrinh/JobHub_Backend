@@ -7,7 +7,6 @@ public class RestResponse<T> {
     private int status;
     private String error;
     private Object message;
-
     private T data;
 
 }

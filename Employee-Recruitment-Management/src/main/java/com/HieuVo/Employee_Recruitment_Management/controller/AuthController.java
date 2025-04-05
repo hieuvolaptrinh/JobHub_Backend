@@ -2,6 +2,8 @@ package com.HieuVo.Employee_Recruitment_Management.controller;
 
 
 import com.HieuVo.Employee_Recruitment_Management.Model.DTO.LoginDTO;
+import com.HieuVo.Employee_Recruitment_Management.Util.SecurityUtil;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,15 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-private AuthenticationManagerBuilder authenticationManagerBuider;
+    private final AuthenticationManagerBuilder authenticationManagerBuider;
 
-public AuthController(AuthenticationManagerBuilder authenticationManager) {
+    private final SecurityUtil securityUtil;
+
+    public AuthController(AuthenticationManagerBuilder authenticationManager, SecurityUtil securityUtil) {
         this.authenticationManagerBuider = authenticationManager;
-}
+        this.securityUtil = securityUtil;
+    }
+
     @PostMapping("/login")
     public ResponseEntity<LoginDTO> login(@RequestBody @Valid LoginDTO loginDTO) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
-        Authentication authentication =this.authenticationManagerBuider.getObject().authenticate(authenticationToken);
+        Authentication authentication = this.authenticationManagerBuider.getObject().authenticate(authenticationToken);
+//       create a token
+        this.securityUtil.createToken(authentication);
         return ResponseEntity.ok().body(loginDTO);
     }
 }

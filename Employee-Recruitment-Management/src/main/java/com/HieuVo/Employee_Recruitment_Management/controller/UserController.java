@@ -2,7 +2,7 @@ package com.HieuVo.Employee_Recruitment_Management.controller;
 
 import com.HieuVo.Employee_Recruitment_Management.Model.User;
 
-import com.HieuVo.Employee_Recruitment_Management.service.Error.IdInvalidException;
+import com.HieuVo.Employee_Recruitment_Management.Util.Error.IdInvalidException;
 import com.HieuVo.Employee_Recruitment_Management.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
