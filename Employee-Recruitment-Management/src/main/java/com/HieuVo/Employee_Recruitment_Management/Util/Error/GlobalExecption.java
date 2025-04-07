@@ -1,6 +1,6 @@
 package com.HieuVo.Employee_Recruitment_Management.Util.Error;
 
-import com.HieuVo.Employee_Recruitment_Management.Model.RestResponse;
+import com.HieuVo.Employee_Recruitment_Management.DTO.RestResponse;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

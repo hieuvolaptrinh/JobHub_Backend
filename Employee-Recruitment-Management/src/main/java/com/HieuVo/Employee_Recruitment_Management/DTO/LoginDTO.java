@@ -1,4 +1,4 @@
-package com.HieuVo.Employee_Recruitment_Management.Model.DTO;
+package com.HieuVo.Employee_Recruitment_Management.DTO;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

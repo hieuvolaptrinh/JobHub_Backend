@@ -1,4 +1,4 @@
-package com.HieuVo.Employee_Recruitment_Management.Model;
+package com.HieuVo.Employee_Recruitment_Management.DTO;
 
 import lombok.Data;
 

@@ -1,7 +1,7 @@
 package com.HieuVo.Employee_Recruitment_Management.Util;
 
 
-import com.HieuVo.Employee_Recruitment_Management.Model.RestResponse;
+import com.HieuVo.Employee_Recruitment_Management.DTO.RestResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -31,6 +31,9 @@ public class FormatRestResponse  implements ResponseBodyAdvice<Object> {
 
         RestResponse<Object> restResponse = new RestResponse<Object>();
         restResponse.setStatus(status);
+if(body instanceof String) {
+    return body;
+}
 
 //        case error
         if(status >=400){
