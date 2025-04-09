@@ -35,4 +35,11 @@ public class Company {
     private Instant createAt;
 
     private Instant updateAt;
+
+    @PrePersist
+    public void handleBeforeCreate() {
+        this.createBy = "Hiếu võ ";
+        this.createAt = Instant.now();
+        this.updateBy = "Hiếu võ ";
+    }
 }
