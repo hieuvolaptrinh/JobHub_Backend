@@ -1,7 +1,7 @@
 package com.HieuVo.JobHub_BE.Model;
 
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,10 +16,13 @@ public class Company {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank(message = "Name is not blank")
     private String name;
 
+    @NotBlank(message = "logo is not blank")
     private String logo;
 
+    @NotBlank(message = "address is not blank")
     private String address;
 
     @Column(columnDefinition = "VARCHAR(MAX)")
