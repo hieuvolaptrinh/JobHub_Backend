@@ -1,5 +1,7 @@
 package com.HieuVo.JobHub_BE.Model;
 
+import com.HieuVo.JobHub_BE.Util.SecurityUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -32,14 +34,22 @@ public class Company {
 
     private String createBy;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")  // format cho frontEnd
     private Instant createAt;
 
     private Instant updateAt;
 
     @PrePersist
     public void handleBeforeCreate() {
-        this.createBy = "Hiếu võ ";
+        this.createBy = SecurityUtil.getCurrentUserLogin().isPresent() == true ?
+                SecurityUtil.getCurrentUserLogin().get() : "";
         this.createAt = Instant.now();
-        this.updateBy = "Hiếu võ ";
+    }
+
+    @PreUpdate
+    public void handleBeforeUpdate() {
+        this.updateAt = Instant.now();
+        this.updateBy= SecurityUtil.getCurrentUserLogin().isPresent() == true ?
+                SecurityUtil.getCurrentUserLogin().get() : "";
     }
 }

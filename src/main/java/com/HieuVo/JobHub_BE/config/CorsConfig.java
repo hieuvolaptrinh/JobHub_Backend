@@ -25,7 +25,7 @@ public class CorsConfig {
                 "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type",
                 "Accept"));
-        // configuration.setAllowedHeaders(Arrays.asList("*")); // all headers
+//         configuration.setAllowedHeaders(Arrays.asList("*")); // all headers
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
         // How long the response from a pre-flight request can be cached by clients

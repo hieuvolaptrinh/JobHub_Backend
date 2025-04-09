@@ -1,5 +1,8 @@
 package com.HieuVo.JobHub_BE.controller;
 
+import com.HieuVo.JobHub_BE.DTO.ResultPaginationDTO;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,8 +40,12 @@ public class UserController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<User>> getAllUser() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser());
+    public ResponseEntity<ResultPaginationDTO> getAllUser(@RequestParam(value = "current" ,defaultValue = "1") String current,
+                                                          @RequestParam(value = "pageSize", defaultValue = "5") String pageSize) {
+        int currentPage = Integer.parseInt(current);
+        int pageSizeInt = Integer.parseInt(pageSize);
+        Pageable pageable = PageRequest.of(currentPage-1, pageSizeInt);
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(pageable));
     }
 
     @PutMapping()

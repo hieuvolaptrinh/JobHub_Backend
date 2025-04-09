@@ -1,5 +1,9 @@
 package com.HieuVo.JobHub_BE.service;
 
+import com.HieuVo.JobHub_BE.DTO.Meta;
+import com.HieuVo.JobHub_BE.DTO.ResultPaginationDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.HieuVo.JobHub_BE.Model.User;
@@ -34,8 +38,22 @@ public class UserService {
         return null;
     }
 
-    public List<User> fetchAllUser() {
-        return this.userRepository.findAll();
+    public ResultPaginationDTO fetchAllUser(Pageable pageable) {
+        Page<User> page = this.userRepository.findAll(pageable);
+
+        Meta meta = new Meta();
+        ResultPaginationDTO result = new ResultPaginationDTO();
+
+        meta.setPage(page.getNumber()+1);
+        meta.setPageSize(page.getSize());
+
+        meta.setTotal(page.getTotalElements());
+        meta.setPages(page.getTotalPages());
+
+        result.setMeta(meta);
+        result.setResult(page.getContent());
+
+        return result;
     }
 
     public User handleUpdateUser(User user) {
