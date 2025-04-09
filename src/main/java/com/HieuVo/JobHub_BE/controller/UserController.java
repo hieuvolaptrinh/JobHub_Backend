@@ -16,7 +16,8 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+
     public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
@@ -44,7 +45,6 @@ private final PasswordEncoder passwordEncoder;
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.OK).body(this.userService.handleUpdateUser(user));
     }
-
 
 
     @DeleteMapping("/{id}")

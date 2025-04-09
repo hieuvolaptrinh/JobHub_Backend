@@ -1,5 +1,6 @@
 package com.HieuVo.JobHub_BE.controller;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,7 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestControler {
 
     @GetMapping()
+    @CrossOrigin
     public String test() {
-        return "Hello World";
+        return "update Hello World";
     }
 }

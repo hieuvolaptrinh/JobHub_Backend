@@ -10,10 +10,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //		(exclude =
 //		{org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class
 //		})
-public class EmployeeRecruitmentManagementApplication {
+public class JobHubBE {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EmployeeRecruitmentManagementApplication.class, args);
+		SpringApplication.run(JobHubBE.class, args);
 	}
 
 }
