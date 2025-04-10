@@ -59,7 +59,7 @@ public class UserService {
     public User handleUpdateUser(User user) {
         User currentUser = fetchtUserById(user.getId());
         if (currentUser != null) {
-            currentUser.setUsername(user.getUsername());
+            currentUser.setName(user.getName());
             currentUser.setPassword(user.getPassword());
             currentUser.setEmail(user.getEmail());
 
@@ -68,6 +68,9 @@ public class UserService {
     }
 
     public User handlerGetUserbyUserName(String username) {
-        return this.userRepository.findByUsername(username);
+        return this.userRepository.findByName(username);
+    }
+    public User findByEmail(String email) {
+        return this.userRepository.findByEmail(email);
     }
 }

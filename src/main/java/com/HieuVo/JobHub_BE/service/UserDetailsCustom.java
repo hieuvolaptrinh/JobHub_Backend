@@ -18,13 +18,13 @@ public class UserDetailsCustom implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        com.HieuVo.JobHub_BE.Model.User user = this.userService.handlerGetUserbyUserName(username);
+        com.HieuVo.JobHub_BE.Model.User user = this.userService.findByEmail(email);
         if (user == null)
-            throw new UsernameNotFoundException("User not found with username: " + username);
+            throw new UsernameNotFoundException("User not found with username: " + email);
         return new User(
-                user.getUsername(),
+                user.getEmail(),
                 user.getPassword(),
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
     }
