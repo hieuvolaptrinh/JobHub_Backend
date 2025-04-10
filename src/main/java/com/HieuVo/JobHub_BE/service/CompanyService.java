@@ -6,8 +6,10 @@ import com.HieuVo.JobHub_BE.Model.Company;
 import com.HieuVo.JobHub_BE.repository.CompanyRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,9 +25,9 @@ public class CompanyService {
     }
 
 
-    public ResultPaginationDTO fetchAllCompany(Pageable pageable) {
+    public ResultPaginationDTO fetchAllCompany(Specification<Company> spec, Pageable pageable) {
 
-        Page<Company> pageCompanies = this.companyRepository.findAll(pageable);
+        Page<Company> pageCompanies = this.companyRepository.findAll(spec,pageable);
         ResultPaginationDTO result = new ResultPaginationDTO();
         Meta meta = new Meta();
 

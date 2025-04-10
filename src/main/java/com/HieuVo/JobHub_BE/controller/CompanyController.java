@@ -4,16 +4,15 @@ package com.HieuVo.JobHub_BE.controller;
 import com.HieuVo.JobHub_BE.DTO.ResultPaginationDTO;
 import com.HieuVo.JobHub_BE.Model.Company;
 import com.HieuVo.JobHub_BE.service.CompanyService;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/companies")
@@ -31,13 +30,11 @@ public class CompanyController {
     }
 
     @GetMapping()
-    public ResponseEntity<ResultPaginationDTO> getAllCompanies(@RequestParam("current") Optional<String> current,
-                                                               @RequestParam("pageSize" ) Optional<String> size
-                        ){
-        String currentPage = current.isPresent() ? current.get() : "1";
-        String pageSize = size.orElse("4");
-        Pageable pageable = PageRequest.of(Integer.parseInt(currentPage)-1, Integer.parseInt(pageSize));
-        return ResponseEntity.ok(this.companyService.fetchAllCompany(pageable));
+    public ResponseEntity<ResultPaginationDTO> getAllCompanies(
+            @Filter Specification<Company> spec,
+            Pageable pageable // page,size,sort
+             ){
+        return ResponseEntity.ok(this.companyService.fetchAllCompany(spec,pageable));
     }
 
     @PutMapping
