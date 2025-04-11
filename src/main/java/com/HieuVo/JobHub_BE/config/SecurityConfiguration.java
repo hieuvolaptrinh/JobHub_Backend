@@ -67,7 +67,7 @@ public class SecurityConfiguration {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix(""); // tiền tố cho role
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("role"); // claim bên jwt
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("user"); // claim bên jwt
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
@@ -82,7 +82,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults()) // -> mình config ở file CorsConfig
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/api/v1/login/**", "/").permitAll()
+                                .requestMatchers("/api/v1/auth/login/**", "/").permitAll()
                                 .anyRequest().authenticated()
 //                 .anyRequest().permitAll()
                 )
