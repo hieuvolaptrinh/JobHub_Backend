@@ -20,10 +20,11 @@ import java.util.stream.Collectors;
 public class GlobalExecption {
     @ExceptionHandler(value = { IdInvalidException.class,
             UsernameNotFoundException.class,
-            BadCredentialsException.class
+            BadCredentialsException.class,
+            Exception.class // all other exception
 
     })
-    public ResponseEntity<RestResponse<Object>> handleIdInvalidException(Exception ex) {
+    public ResponseEntity<RestResponse<Object>> handleException(Exception ex) {
         RestResponse<Object> restResponse = new RestResponse<Object>();
         restResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         restResponse.setError(ex.getMessage());

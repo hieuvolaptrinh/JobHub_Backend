@@ -58,7 +58,9 @@ public class SecurityUtil {
             return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,
                     claims)).getTokenValue();
     }
-        public static Optional<String> getCurrentUserLogin() {
+
+
+    public static Optional<String> getCurrentUserLogin() {
         SecurityContext securityContext = SecurityContextHolder.getContext();
         return Optional.ofNullable(extractPrincipal(securityContext.getAuthentication()));
     }
@@ -83,8 +85,8 @@ public class SecurityUtil {
 //        JwtClaimsSet claims = JwtClaimsSet.builder() // Xấy dựng các khai báo cho JWT
 //                .issuedAt(now) // Thời điểm phát hành token là thời điểm hiện tại
 //                .expiresAt(validity)
-//                .subject(email) // Chủ thể của token là tên đăng nhập của user
-//                .claim("user", dto.getUser()) //
+//                .subject(email) // Chủ thể của token là tên đăng nhập của UserLogin
+//                .claim("UserLogin", dto.getUser()) //
 //                .build();
 //        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
 //        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,

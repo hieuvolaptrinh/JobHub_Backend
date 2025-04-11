@@ -1,4 +1,4 @@
-package com.HieuVo.JobHub_BE.service;
+package com.HieuVo.JobHub_BE.Service;
 
 import com.HieuVo.JobHub_BE.DTO.Meta;
 import com.HieuVo.JobHub_BE.DTO.ResultPaginationDTO;
@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,8 +30,8 @@ public class CompanyService {
         ResultPaginationDTO result = new ResultPaginationDTO();
         Meta meta = new Meta();
 
-        meta.setPage(pageCompanies.getNumber()+1);
-        meta.setPageSize(pageCompanies.getSize());
+        meta.setPage(pageable.getPageNumber()+1);
+        meta.setPageSize(pageable.getPageSize());
 
         meta.setTotal(pageCompanies.getTotalElements());
         meta.setPages(pageCompanies.getTotalPages());

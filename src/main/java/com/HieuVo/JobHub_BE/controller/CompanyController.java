@@ -3,7 +3,8 @@ package com.HieuVo.JobHub_BE.controller;
 
 import com.HieuVo.JobHub_BE.DTO.ResultPaginationDTO;
 import com.HieuVo.JobHub_BE.Model.Company;
-import com.HieuVo.JobHub_BE.service.CompanyService;
+import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
+import com.HieuVo.JobHub_BE.Service.CompanyService;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 
@@ -25,11 +26,13 @@ public class CompanyController {
     }
 
     @PostMapping
+    @ApiMessage("create a company success")
     public ResponseEntity<Company> createCompany(@RequestBody @Valid Company company ) {
         return ResponseEntity.status(HttpStatus.OK).body(this.companyService.handleCreateCompany(company));
     }
 
     @GetMapping()
+    @ApiMessage("get all company success")
     public ResponseEntity<ResultPaginationDTO> getAllCompanies(
             @Filter Specification<Company> spec,
             Pageable pageable // page,size,sort
@@ -38,11 +41,13 @@ public class CompanyController {
     }
 
     @PutMapping
+    @ApiMessage("update company success")
     public ResponseEntity<Company> updateCompany(  @Valid @RequestBody Company company) {
         return ResponseEntity.status(HttpStatus.OK).body(this.companyService.handleUpDateCompany(company));
     }
 
     @DeleteMapping("/{id}")
+    @ApiMessage("Delete company success")
     public ResponseEntity<Void> deleteCompany(@PathVariable int id) {
         this.companyService.handleDeleteCompany(id);
         return null;

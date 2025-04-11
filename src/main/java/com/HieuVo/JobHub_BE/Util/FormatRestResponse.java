@@ -1,6 +1,7 @@
 package com.HieuVo.JobHub_BE.Util;
 
 
+import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -42,7 +43,8 @@ if(body instanceof String) {
         }
         else {
             restResponse.setData(body);
-            restResponse.setMessage("Call api thành công");
+            ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class); // get annotation
+            restResponse.setMessage(message!=null ? message.value(): "Call api thành công");
 
         }
         return restResponse;

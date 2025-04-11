@@ -1,4 +1,4 @@
-package com.HieuVo.JobHub_BE.service.Specification;
+package com.HieuVo.JobHub_BE.Service.Specification;
 
 import com.HieuVo.JobHub_BE.Model.Company;
 import org.springframework.data.jpa.domain.Specification;

@@ -82,9 +82,9 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults()) // -> mình config ở file CorsConfig
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/login", "/").permitAll()
+                                .requestMatchers("/api/v1/login/**", "/").permitAll()
                                 .anyRequest().authenticated()
-                // .anyRequest().permitAll()
+//                 .anyRequest().permitAll()
                 )
                 // tự tách Bearer token ra khỏi header
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
