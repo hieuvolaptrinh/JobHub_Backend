@@ -1,9 +1,11 @@
 package com.HieuVo.JobHub_BE.Util;
 
+import com.HieuVo.JobHub_BE.DTO.Response.ResponseLoginDTO;
 import com.nimbusds.jose.util.Base64;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +18,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SecurityUtil {
@@ -23,8 +26,11 @@ public class SecurityUtil {
     @Value("${jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${jwt.token-validity-in-seconds}")
-    private long jwtExpiration;
+    @Value("${jwt.access-token-validity-in-seconds}")
+    private long accessTokenExpiration;
+
+    @Value("${jwt.refresh-token-validity-in-seconds}")
+    private long refreshTokenExpiration;
 
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
 
@@ -39,24 +45,45 @@ public class SecurityUtil {
         return new SecretKeySpec(keyBytes, 0, keyBytes.length, JWT_ALGORITHM.getName());
     }
 
-    public String createToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication) {
         Instant now = Instant.now();
-        Instant validity = now.plus(this.jwtExpiration, ChronoUnit.SECONDS);
+        Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
         // List<String> listAuthorities = new ArrayList<>();
         // listAuthorities.add("ROLE_USER_CREATE");
         // listAuthorities.add("ROLE_USER_UPDATE");
-        // @formatter:off
 
-//   Payload
+        // @formatter:off
             JwtClaimsSet claims = JwtClaimsSet.builder()
                     .issuedAt(now)
                     .expiresAt(validity)
-                    .subject(authentication.getName())
-                    .claim("role",authentication)
+                    .subject(authentication.getName()) // email
+                    .claim("role", authentication)
+//                    .claim("roles", authentication.getAuthorities()
+//                            .stream()
+//                            .map(GrantedAuthority::getAuthority)
+//                            .collect(Collectors.toList()))
                     .build();
             JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
             return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,
                     claims)).getTokenValue();
+    }
+
+
+    public String createRefreshToken(String email, ResponseLoginDTO dto) {
+        Instant now = Instant.now();
+        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
+
+//   Payload
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuedAt(now)
+                .expiresAt(validity)
+                .subject(email)
+                .claim("user", dto.getUser())
+
+                .build();
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,
+                claims)).getTokenValue();
     }
 
 

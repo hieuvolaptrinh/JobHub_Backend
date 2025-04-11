@@ -30,8 +30,8 @@ public class SecurityConfiguration {
     @Value("${jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${jwt.token-validity-in-seconds}")
-    private int jwtExpiration;
+    @Value("${jwt.access-token-validity-in-seconds}")
+    private int accessTokenExpiration;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -44,7 +44,7 @@ public class AuthController {
 //        xác thực người dùng => cần viết hàm loadUserByUsername
         Authentication authentication = this.authenticationManagerBuider.getObject().authenticate(authenticationToken);
 //       create a token
-        String accessToken = this.securityUtil.createToken(authentication);
+        String accessToken = this.securityUtil.createAccessToken(authentication);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -53,11 +53,11 @@ public class AuthController {
         ResponseLoginDTO res = new ResponseLoginDTO();
         ResponseLoginDTO.UserLogin userLogin = new ResponseLoginDTO.UserLogin(currentUserDB.getId(),currentUserDB.getEmail(),currentUserDB.getName());
         res.setUser(userLogin);
-//        query user lại
         userLogin.setId(1L);
-
-
         res.setAccessToken(accessToken);
+
+//        create refresh token
+        String refreshToken = this.securityUtil.createRefreshToken(loginDTO.getUsername(), res);
         return ResponseEntity.ok().body(res);
     }
 }
