@@ -36,6 +36,7 @@ public class User {
 
     private String address;
 
+    @Column(columnDefinition = "VARCHAR(MAX)")
     private String refreshToken;
 
     private Instant createdAt;

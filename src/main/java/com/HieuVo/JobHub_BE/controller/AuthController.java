@@ -47,17 +47,16 @@ public class AuthController {
         String accessToken = this.securityUtil.createAccessToken(authentication);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
         User currentUserDB = this.userService.findByEmail(loginDTO.getUsername());
         ResponseLoginDTO res = new ResponseLoginDTO();
         ResponseLoginDTO.UserLogin userLogin = new ResponseLoginDTO.UserLogin(currentUserDB.getId(),currentUserDB.getEmail(),currentUserDB.getName());
         res.setUser(userLogin);
         userLogin.setId(1L);
         res.setAccessToken(accessToken);
-
 //        create refresh token
         String refreshToken = this.securityUtil.createRefreshToken(loginDTO.getUsername(), res);
-        return ResponseEntity.ok().body(res);
+
+       this.userService.updateUserToken(loginDTO.getUsername(), refreshToken);
+       return ResponseEntity.ok().body(res);
     }
 }
