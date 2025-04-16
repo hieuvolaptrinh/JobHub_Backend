@@ -10,7 +10,7 @@ public class ResponseLoginDTO {
     @JsonProperty("access_token")
     private String accessToken;
     private UserLogin user;
-    private UserGetAccount userGetAccount;
+
 
     @Getter
     @Setter
