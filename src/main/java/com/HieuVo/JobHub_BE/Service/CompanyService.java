@@ -1,7 +1,7 @@
 package com.HieuVo.JobHub_BE.Service;
 
 import com.HieuVo.JobHub_BE.DTO.Meta;
-import com.HieuVo.JobHub_BE.DTO.ResultPaginationDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
 import com.HieuVo.JobHub_BE.Model.Company;
 import com.HieuVo.JobHub_BE.repository.CompanyRepository;
 import org.springframework.data.domain.Page;

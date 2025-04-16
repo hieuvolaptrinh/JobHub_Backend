@@ -1,5 +1,6 @@
-package com.HieuVo.JobHub_BE.DTO;
+package com.HieuVo.JobHub_BE.DTO.Response;
 
+import com.HieuVo.JobHub_BE.DTO.Meta;
 import lombok.Getter;
 import lombok.Setter;
 

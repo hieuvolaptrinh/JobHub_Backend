@@ -1,7 +1,7 @@
 package com.HieuVo.JobHub_BE.controller;
 
 
-import com.HieuVo.JobHub_BE.DTO.ResultPaginationDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
 import com.HieuVo.JobHub_BE.Model.Company;
 import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
 import com.HieuVo.JobHub_BE.Service.CompanyService;

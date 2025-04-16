@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import com.HieuVo.JobHub_BE.DTO.RestResponse;
+import com.HieuVo.JobHub_BE.DTO.Response.RestResponse;
 
 @ControllerAdvice
 public class FormatRestResponse  implements ResponseBodyAdvice<Object> {

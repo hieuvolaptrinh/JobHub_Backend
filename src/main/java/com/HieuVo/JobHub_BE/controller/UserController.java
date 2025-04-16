@@ -3,7 +3,7 @@ package com.HieuVo.JobHub_BE.controller;
 import com.HieuVo.JobHub_BE.DTO.Response.ResCreateUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResUpdateUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResUserDTO;
-import com.HieuVo.JobHub_BE.DTO.ResultPaginationDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
 import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import org.springframework.data.domain.Pageable;

@@ -4,7 +4,7 @@ import com.HieuVo.JobHub_BE.DTO.Meta;
 import com.HieuVo.JobHub_BE.DTO.Response.ResCreateUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResUpdateUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResUserDTO;
-import com.HieuVo.JobHub_BE.DTO.ResultPaginationDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -168,22 +168,25 @@ public class UserService {
         }
         return newUser;
     }
-
     public User handlerGetUserbyUserName(String username) {
         return this.userRepository.findByName(username);
     }
-
     public User findByEmail(String email) {
         return this.userRepository.findByEmail(email);
     }
 
 //    update user token
     public void updateUserToken(String token, String email){
+        System.out.println("updateUserToken: " + token);
+        System.out.println();
         User currenUser= this.userRepository.findByEmail(email);
         if(currenUser != null){
             currenUser.setRefreshToken(token);
             this.userRepository.save(currenUser);
-
         }
+    }
+
+    public User getUserByRefreshTokenAndEmail(String refresh_token, String email) {
+        return this.userRepository.findByRefreshTokenAndEmail(refresh_token, email);
     }
 }

@@ -47,7 +47,7 @@ public class SecurityUtil {
         return new SecretKeySpec(keyBytes, 0, keyBytes.length, JWT_ALGORITHM.getName());
     }
 
-    public String createAccessToken(Authentication authentication, ResponseLoginDTO.UserLogin dto) {
+    public String createAccessToken(String email, ResponseLoginDTO.UserLogin dto) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
         List<String> listAuthorities = new ArrayList<>();
@@ -58,7 +58,7 @@ public class SecurityUtil {
             JwtClaimsSet claims = JwtClaimsSet.builder()
                     .issuedAt(now)
                     .expiresAt(validity)
-                    .subject(authentication.getName()) // email
+                    .subject(email)
                     .claim("user", dto)
                     .claim("permission", listAuthorities)
 

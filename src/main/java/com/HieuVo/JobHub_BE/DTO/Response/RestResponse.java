@@ -1,4 +1,4 @@
-package com.HieuVo.JobHub_BE.DTO;
+package com.HieuVo.JobHub_BE.DTO.Response;
 
 import lombok.Data;
 

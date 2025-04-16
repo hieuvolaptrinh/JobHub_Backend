@@ -1,6 +1,6 @@
 package com.HieuVo.JobHub_BE.config;
 
-import com.HieuVo.JobHub_BE.DTO.RestResponse;
+import com.HieuVo.JobHub_BE.DTO.Response.RestResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

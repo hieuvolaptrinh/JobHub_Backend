@@ -1,6 +1,5 @@
 package com.HieuVo.JobHub_BE.Util.Error;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,7 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import com.HieuVo.JobHub_BE.DTO.RestResponse;
+import com.HieuVo.JobHub_BE.DTO.Response.RestResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

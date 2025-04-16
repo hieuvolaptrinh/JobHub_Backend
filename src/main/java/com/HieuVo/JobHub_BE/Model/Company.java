@@ -34,7 +34,7 @@ public class Company {
 
     private String createBy;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")  // format cho frontEnd
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
     private Instant createAt;
 
     private Instant updateAt;
