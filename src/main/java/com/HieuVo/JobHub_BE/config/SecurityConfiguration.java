@@ -50,6 +50,7 @@ public class SecurityConfiguration {
                 getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
         return token -> {
             try {
+
                 return jwtDecoder.decode(token);
             } catch (JwtException e) {
                 throw new JwtException("Token is invalid");
@@ -67,7 +68,7 @@ public class SecurityConfiguration {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix(""); // tiền tố cho role
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("user"); // claim bên jwt
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("permission"); // claim bên jwt
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
@@ -75,7 +76,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
-            CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
+                                           CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
         http
 
                 .csrf(c -> c.disable())

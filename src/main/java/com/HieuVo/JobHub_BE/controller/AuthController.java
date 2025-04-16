@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import com.HieuVo.JobHub_BE.DTO.LoginDTO;
@@ -42,19 +43,25 @@ public class AuthController {
     @ApiMessage("Login success")
     public ResponseEntity<ResponseLoginDTO> login(@RequestBody @Valid LoginDTO loginDTO) {
 //        Nap username va password vao authentication
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginDTO.getUsername()
+                        , loginDTO.getPassword());
 //        xác thực người dùng => cần viết hàm loadUserByUsername
         Authentication authentication = this.authenticationManagerBuider.getObject().authenticate(authenticationToken);
-//       create a token
+//        set thông tin đăng nhập vào context để sau này xài
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        //       create a token
         User currentUserDB = this.userService.findByEmail(loginDTO.getUsername());
 
         ResponseLoginDTO res = new ResponseLoginDTO();
-        ResponseLoginDTO.UserLogin userLogin = new ResponseLoginDTO.UserLogin(currentUserDB.getId(), currentUserDB.getEmail(), currentUserDB.getName());
+        ResponseLoginDTO.UserLogin userLogin = new ResponseLoginDTO.UserLogin(
+                currentUserDB.getId(),
+                currentUserDB.getEmail(),
+                currentUserDB.getName());
         res.setUser(userLogin);
 
-
-
+//        create access token
         String accessToken = this.securityUtil.createAccessToken(authentication, userLogin);
         res.setAccessToken(accessToken);
 //        create refresh token
@@ -77,12 +84,24 @@ public class AuthController {
     @GetMapping("/auth/account")
     @ApiMessage("Get account success")
     public ResponseEntity<ResponseLoginDTO.UserLogin> getAccount() {
-        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
-
+        String email = SecurityUtil.getCurrentUserLogin()
+                .isPresent() ?
+                SecurityUtil.getCurrentUserLogin().get() : "";
         User currentUserDB = this.userService.findByEmail(email);
         ResponseLoginDTO res = new ResponseLoginDTO();
         ResponseLoginDTO.UserLogin userLogin = new ResponseLoginDTO.UserLogin(currentUserDB.getId(), currentUserDB.getEmail(), currentUserDB.getName());
         res.setUser(userLogin);
         return ResponseEntity.ok().body(userLogin);
+    }
+
+    @GetMapping("/auth/refresh")
+    @ApiMessage("get user by refresh token")
+    public ResponseEntity<String> getRefreshToken(
+            @CookieValue(name = "refresh_token", defaultValue = "") String refresh_token) {
+//        check valid
+        Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refresh_token);
+
+        String email = decodedToken.getSubject(); //Lấy ở Subject
+        return ResponseEntity.ok().body(email);
     }
 }

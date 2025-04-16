@@ -17,6 +17,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -48,9 +50,9 @@ public class SecurityUtil {
     public String createAccessToken(Authentication authentication, ResponseLoginDTO.UserLogin dto) {
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
-        // List<String> listAuthorities = new ArrayList<>();
-        // listAuthorities.add("ROLE_USER_CREATE");
-        // listAuthorities.add("ROLE_USER_UPDATE");
+        List<String> listAuthorities = new ArrayList<>();
+        listAuthorities.add("ROLE_USER_CREATE");
+        listAuthorities.add("ROLE_USER_UPDATE");
 
         // @formatter:off
             JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -58,16 +60,13 @@ public class SecurityUtil {
                     .expiresAt(validity)
                     .subject(authentication.getName()) // email
                     .claim("user", dto)
-//                    .claim("roles", authentication.getAuthorities()
-//                            .stream()
-//                            .map(GrantedAuthority::getAuthority)
-//                            .collect(Collectors.toList()))
+                    .claim("permission", listAuthorities)
+
                     .build();
             JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
             return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,
                     claims)).getTokenValue();
     }
-
 
     public String createRefreshToken(String email, ResponseLoginDTO dto) {
         Instant now = Instant.now();
@@ -112,6 +111,18 @@ public class SecurityUtil {
                 .map(authentication -> (String) authentication.getCredentials());
     }
 
+public Jwt checkValidRefreshToken(String token){
+    NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
+            getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
+    try{
+        System.out.println("refresh token: " + token+" hợp lệ");
+        return jwtDecoder.decode(token);
+    }
+    catch (Exception e){
+      System.out.println(">>>>>>>>>>>> referesh token is invalid" + e.getMessage());
+        throw e;
+    }
+}
 
     // public static boolean isAuthenticated() {
     //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

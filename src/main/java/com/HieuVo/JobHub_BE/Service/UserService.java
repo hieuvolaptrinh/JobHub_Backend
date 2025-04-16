@@ -176,6 +176,7 @@ public class UserService {
     public User findByEmail(String email) {
         return this.userRepository.findByEmail(email);
     }
+
 //    update user token
     public void updateUserToken(String token, String email){
         User currenUser= this.userRepository.findByEmail(email);
