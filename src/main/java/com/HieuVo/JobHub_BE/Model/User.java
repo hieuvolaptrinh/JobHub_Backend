@@ -2,6 +2,7 @@ package com.HieuVo.JobHub_BE.Model;
 
 import com.HieuVo.JobHub_BE.Util.Constant.GenderEnum;
 import com.HieuVo.JobHub_BE.Util.SecurityUtil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -18,7 +19,7 @@ import java.time.Instant;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long  id;
 
     private String name;
 
@@ -46,6 +47,11 @@ public class User {
     private String createdBy;
 
     private String updatedBy;
+
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "company_id")
+    private Company company;
 
 
     @PreUpdate

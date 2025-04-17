@@ -2,12 +2,14 @@ package com.HieuVo.JobHub_BE.Model;
 
 import com.HieuVo.JobHub_BE.Util.SecurityUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,7 +18,7 @@ import java.time.Instant;
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long  id;
 
     @NotBlank(message = "Name is not blank")
     private String name;
@@ -34,10 +36,13 @@ public class Company {
 
     private String createBy;
 
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+7")
     private Instant createAt;
 
     private Instant updateAt;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<User> users;
 
     @PrePersist
     public void handleBeforeCreate() {

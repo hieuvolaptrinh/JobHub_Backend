@@ -37,6 +37,8 @@ public class ResponseUserDTO {
         this.id = id;
     }
 
+    @Setter
+    @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CompanyUser {
