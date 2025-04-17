@@ -18,7 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
-import com.HieuVo.JobHub_BE.DTO.Request.ReqoginDTO;
+import com.HieuVo.JobHub_BE.DTO.Request.RequestLoginDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResponseLoginDTO;
 import com.HieuVo.JobHub_BE.Util.SecurityUtil;
 
@@ -42,7 +42,7 @@ public class AuthController {
 
     @PostMapping("/auth/login")
     @ApiMessage("Login success")
-    public ResponseEntity<ResponseLoginDTO> login(@RequestBody @Valid ReqoginDTO loginDTO) {
+    public ResponseEntity<ResponseLoginDTO> login(@RequestBody @Valid RequestLoginDTO loginDTO) {
 //        Nap username va password vao authentication
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDTO.getUsername()

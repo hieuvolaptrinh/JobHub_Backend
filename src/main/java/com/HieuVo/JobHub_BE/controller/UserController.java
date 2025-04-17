@@ -1,8 +1,8 @@
 package com.HieuVo.JobHub_BE.controller;
 
-import com.HieuVo.JobHub_BE.DTO.Response.ResCreateUserDTO;
-import com.HieuVo.JobHub_BE.DTO.Response.ResUpdateUserDTO;
-import com.HieuVo.JobHub_BE.DTO.Response.ResUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.ResponseCreateUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.ResponseUpdateUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.ResponseUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
 import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
@@ -31,7 +31,7 @@ public class UserController {
 
     @PostMapping()
     @ApiMessage("create a UserLogin success")
-    public ResponseEntity<ResCreateUserDTO> createUser(@RequestBody User user) throws Exception {
+    public ResponseEntity<ResponseCreateUserDTO> createUser(@RequestBody User user) throws Exception {
         boolean isEmailExist = this.userService.checkEmailExist(user.getEmail());
         if (isEmailExist) {
             throw new Exception("Email " + user.getEmail() + " da ton tai, vui long su dung email khac");
@@ -45,7 +45,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ApiMessage("Get UserLogin by id success")
-    public ResponseEntity<ResUserDTO> getUserById(@PathVariable("id") long id) throws IdInvalidException {
+    public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable("id") long id) throws IdInvalidException {
         User getUser = this.userService.handleFecthUserById(id);
         if (getUser == null) {
             throw new IdInvalidException("Id " + id + " khong ton tai");
@@ -64,7 +64,7 @@ public class UserController {
 
     @PutMapping()
     @ApiMessage("Update UserLogin success")
-    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
+    public ResponseEntity<ResponseUpdateUserDTO> updateUser(@RequestBody User user) throws IdInvalidException {
         User updateUser = this.userService.handleUpdateUser(user);
         if (updateUser == null) {
             throw new IdInvalidException("Id " + user.getId() + " khong ton tai");

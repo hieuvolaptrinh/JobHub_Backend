@@ -14,7 +14,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResUserDTO {
+public class ResponseUserDTO {
     private long id;
     private String email;
     private String name;
@@ -26,7 +26,7 @@ public class ResUserDTO {
     private CompanyUser company;
 
 
-    public ResUserDTO(long id, @NotBlank(message = "Email is required") String email, String name, GenderEnum gender, String address, Integer age, Instant updatedAt, Instant createdAt) {
+    public ResponseUserDTO(long id, @NotBlank(message = "Email is required") String email, String name, GenderEnum gender, String address, Integer age, Instant updatedAt, Instant createdAt) {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.age = age;

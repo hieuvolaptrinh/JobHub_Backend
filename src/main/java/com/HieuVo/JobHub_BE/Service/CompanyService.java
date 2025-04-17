@@ -1,6 +1,5 @@
 package com.HieuVo.JobHub_BE.Service;
 
-import com.HieuVo.JobHub_BE.DTO.Meta;
 import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
 import com.HieuVo.JobHub_BE.Model.Company;
 import com.HieuVo.JobHub_BE.repository.CompanyRepository;
@@ -28,7 +27,7 @@ public class CompanyService {
 
         Page<Company> pageCompanies = this.companyRepository.findAll(spec,pageable);
         ResultPaginationDTO result = new ResultPaginationDTO();
-        Meta meta = new Meta();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
 
         meta.setPage(pageable.getPageNumber()+1);
         meta.setPageSize(pageable.getPageSize());

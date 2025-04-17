@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class ReqoginDTO {
+public class RequestLoginDTO {
     @NotBlank(message = "Username cannot be blank")
     private String username; // là email á
 

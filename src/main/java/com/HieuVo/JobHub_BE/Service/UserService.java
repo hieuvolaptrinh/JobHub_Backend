@@ -1,9 +1,7 @@
 package com.HieuVo.JobHub_BE.Service;
-
-import com.HieuVo.JobHub_BE.DTO.Meta;
-import com.HieuVo.JobHub_BE.DTO.Response.ResCreateUserDTO;
-import com.HieuVo.JobHub_BE.DTO.Response.ResUpdateUserDTO;
-import com.HieuVo.JobHub_BE.DTO.Response.ResUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.ResponseCreateUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.ResponseUpdateUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.ResponseUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,9 +24,9 @@ public class UserService {
     }
 
 //    begin convert to DTO
-    public ResUserDTO convertToResUserDTO(User user) {
-        ResUserDTO res = new ResUserDTO();
-        ResUserDTO.CompanyUser companyUser = new ResUserDTO.CompanyUser();
+    public ResponseUserDTO convertToResUserDTO(User user) {
+        ResponseUserDTO res = new ResponseUserDTO();
+        ResponseUserDTO.CompanyUser companyUser = new ResponseUserDTO.CompanyUser();
 
         res.setId(user.getId());
         res.setEmail(user.getEmail());
@@ -48,8 +46,8 @@ public class UserService {
 
         return res;
     }
-    public ResUpdateUserDTO convertToResUpdateUserDTO(User user) {
-        ResUpdateUserDTO res = new ResUpdateUserDTO();
+    public ResponseUpdateUserDTO convertToResUpdateUserDTO(User user) {
+        ResponseUpdateUserDTO res = new ResponseUpdateUserDTO();
 //        ResUpdateUserDTO.CompanyUser companyUser = new ResUpdateUserDTO.CompanyUser();
 
         res.setId(user.getId());
@@ -67,9 +65,9 @@ public class UserService {
 //        }
         return res;
     }
-    public ResCreateUserDTO convertToResCreateUserDTO(User user) {
-        ResCreateUserDTO res = new ResCreateUserDTO();
-        ResCreateUserDTO.CompanyUser companyUser = new ResCreateUserDTO.CompanyUser();
+    public ResponseCreateUserDTO convertToResCreateUserDTO(User user) {
+        ResponseCreateUserDTO res = new ResponseCreateUserDTO();
+        ResponseCreateUserDTO.CompanyUser companyUser = new ResponseCreateUserDTO.CompanyUser();
 
         res.setId(user.getId());
         res.setEmail(user.getEmail());
@@ -117,7 +115,7 @@ public class UserService {
     public ResultPaginationDTO handleFetchAllUser(Specification<User> spec, Pageable pageable) {
         Page<User> pageUser = this.userRepository.findAll(spec, pageable);
 
-        Meta meta = new Meta();
+        ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
         ResultPaginationDTO result = new ResultPaginationDTO();
 
         meta.setPage(pageable.getPageNumber() + 1);
@@ -128,7 +126,7 @@ public class UserService {
 
         result.setMeta(meta);
 
-        List<ResUserDTO> listResUserDTO = pageUser.getContent().stream()
+        List<ResponseUserDTO> listResUserDTO = pageUser.getContent().stream()
                 .map(this::convertToResUserDTO)
                 .collect(Collectors.toList());
 // or

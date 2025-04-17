@@ -1,5 +1,6 @@
-package com.HieuVo.JobHub_BE.Service;
+package com.HieuVo.JobHub_BE.config;
 
+import com.HieuVo.JobHub_BE.Service.UserService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
