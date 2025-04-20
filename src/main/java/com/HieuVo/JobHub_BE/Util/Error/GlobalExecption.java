@@ -14,12 +14,12 @@ import com.HieuVo.JobHub_BE.DTO.Response.RestResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @RestControllerAdvice
 public class GlobalExecption {
     @ExceptionHandler(value = { IdInvalidException.class,
             UsernameNotFoundException.class,
             BadCredentialsException.class,
+
             Exception.class // all other exception
 
     })
@@ -35,7 +35,6 @@ public class GlobalExecption {
     public ResponseEntity<RestResponse<Object>> validationError(MethodArgumentNotValidException ex) {
         BindingResult result = ex.getBindingResult();
         final List<FieldError> fieldErrors = result.getFieldErrors();
-
 
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatus(HttpStatus.BAD_REQUEST.value());
