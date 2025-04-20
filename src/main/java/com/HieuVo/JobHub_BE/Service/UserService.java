@@ -1,6 +1,9 @@
 package com.HieuVo.JobHub_BE.Service;
 
 import com.HieuVo.JobHub_BE.DTO.Response.*;
+import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseCreateUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseUpdateUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseUserDTO;
 import com.HieuVo.JobHub_BE.Model.Company;
 import com.HieuVo.JobHub_BE.repository.CompanyRepository;
 import org.springframework.data.domain.Page;

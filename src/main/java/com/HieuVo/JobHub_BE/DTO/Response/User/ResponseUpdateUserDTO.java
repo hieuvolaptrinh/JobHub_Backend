@@ -1,5 +1,4 @@
-package com.HieuVo.JobHub_BE.DTO.Response;
-
+package com.HieuVo.JobHub_BE.DTO.Response.User;
 
 import com.HieuVo.JobHub_BE.Util.Constant.GenderEnum;
 import lombok.Getter;
@@ -9,14 +8,14 @@ import java.time.Instant;
 
 @Getter
 @Setter
-public class ResponseCreateUserDTO {
+public class ResponseUpdateUserDTO {
     private long id;
     private String name;
-    private String email;
     private GenderEnum gender;
     private String address;
     private int age;
-    private Instant createdAt;
+
+    private Instant updatedAt;
     private CompanyUser company;
 
 
@@ -26,4 +25,5 @@ public class ResponseCreateUserDTO {
         private long id;
         private String name;
     }
+
 }

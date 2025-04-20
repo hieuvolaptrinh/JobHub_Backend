@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.util.List;
 
 
 @Entity
@@ -53,6 +54,9 @@ public class User {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Resume> resume;
 
     @PreUpdate
     public void handleBeforeUpdate() {

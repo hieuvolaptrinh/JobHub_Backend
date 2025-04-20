@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class StaticResourcesWebConfiguaration implements WebMvcConfigurer {
-    @Value("${jobhub.upload-file.base-url}")
+    @Value("${jobhub.upload-file.base-uri}")
     private String baseURI;
 
     @Override

@@ -1,8 +1,8 @@
 package com.HieuVo.JobHub_BE.controller;
 
-import com.HieuVo.JobHub_BE.DTO.Response.ResponseCreateUserDTO;
-import com.HieuVo.JobHub_BE.DTO.Response.ResponseUpdateUserDTO;
-import com.HieuVo.JobHub_BE.DTO.Response.ResponseUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseCreateUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseUpdateUserDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
 import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;

@@ -1,4 +1,4 @@
-package com.HieuVo.JobHub_BE.DTO.Response;
+package com.HieuVo.JobHub_BE.DTO.Response.User;
 
 
 import com.HieuVo.JobHub_BE.Util.Constant.GenderEnum;

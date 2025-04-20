@@ -1,6 +1,6 @@
 package com.HieuVo.JobHub_BE.controller;
 
-import com.HieuVo.JobHub_BE.DTO.Response.ResponseCreateJobDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.Job.ResponseCreateJobDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
 import com.HieuVo.JobHub_BE.Util.Error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;

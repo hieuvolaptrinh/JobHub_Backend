@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import com.HieuVo.JobHub_BE.DTO.Response.RestResponse;
 
 @ControllerAdvice
-public class FormatRestResponse  implements ResponseBodyAdvice<Object> {
+public class FormatRestResponse implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         return true;
@@ -27,24 +27,24 @@ public class FormatRestResponse  implements ResponseBodyAdvice<Object> {
                                   MethodParameter returnType,
                                   MediaType selectedContentType,
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
-                                  ServerHttpRequest request, ServerHttpResponse response ) {
+                                  ServerHttpRequest request, ServerHttpResponse response) {
         HttpServletResponse servletResponse = ((ServletServerHttpResponse) response).getServletResponse();
         int status = servletResponse.getStatus();
 
         RestResponse<Object> restResponse = new RestResponse<Object>();
         restResponse.setStatus(status);
-if(body instanceof String) {
-    return body;
-}
+        if (body instanceof String ||
+                body instanceof RestResponse) {
+            return body;
+        }
 
 //        case error
-        if(status >=400){
-           return body;
-        }
-        else {
+        if (status >= 400) {
+            return body;
+        } else {
             restResponse.setData(body);
             ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class); // get annotation
-            restResponse.setMessage(message!=null ? message.value(): "Call api thành công");
+            restResponse.setMessage(message != null ? message.value() : "Call api thành công");
 
         }
         return restResponse;
