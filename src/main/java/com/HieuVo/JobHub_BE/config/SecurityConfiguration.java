@@ -83,7 +83,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults()) // -> mình config ở file CorsConfig
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/api/v1/auth/login/**", "/").permitAll()
+                                .requestMatchers("/api/v1/auth/login/**", "/storage/**","/").permitAll()
                                 .anyRequest().authenticated()
 //                 .anyRequest().permitAll()
                 )
