@@ -1,7 +1,6 @@
 package com.HieuVo.JobHub_BE.controller;
 
 
-import com.HieuVo.JobHub_BE.Model.Role;
 import com.HieuVo.JobHub_BE.Model.User;
 import com.HieuVo.JobHub_BE.Service.UserService;
 import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
@@ -40,84 +39,45 @@ public class AuthController {
         this.securityUtil = securityUtil;
     }
 
+
     @PostMapping("/auth/login")
-    public ResponseEntity<ResponseLoginDTO> login(@Valid @RequestBody RequestLoginDTO loginDTO) {
-        // Nạp input gồm usename và password vào security
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDTO.getUsername(), loginDTO.getPassword());
-        Authentication authentication = authenticationManagerBuider.getObject().authenticate(authenticationToken);
-        // SecurityContextHolder.getContext().setAuthentication(authentication);
-        // create token
-
+    @ApiMessage("Login success")
+    public ResponseEntity<ResponseLoginDTO> login(@RequestBody @Valid RequestLoginDTO loginDTO) {
+//        Nap username va password vao authentication
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginDTO.getUsername()
+                        , loginDTO.getPassword());
+//        xác thực người dùng => cần viết hàm loadUserByUsername
+        Authentication authentication = this.authenticationManagerBuider.getObject().authenticate(authenticationToken);
+//        set thông tin đăng nhập vào context để sau này xài
         SecurityContextHolder.getContext().setAuthentication(authentication);
+//       create a token
+        User currentUserDB = this.userService.findByEmail(loginDTO.getUsername());
         ResponseLoginDTO res = new ResponseLoginDTO();
+        ResponseLoginDTO.UserLogin userLogin = new ResponseLoginDTO.UserLogin(
+                currentUserDB.getId(),
+                currentUserDB.getEmail(),
+                currentUserDB.getName());
+        res.setUser(userLogin);
+//        create access token
+        String accessToken = this.securityUtil.createAccessToken(authentication.getName(), userLogin);
+        res.setAccessToken(accessToken);
+//        create refresh token
+        String refreshToken = this.securityUtil.createRefreshToken(loginDTO.getUsername(), res);
 
-        User currentUser = this.userService.findByEmail(loginDTO.getUsername());
-        Role role = currentUser.getRole();
-        if (currentUser != null) {
-            ResponseLoginDTO.UserLogin userLogin = new ResponseLoginDTO.UserLogin(
-                    currentUser.getId(),
-                    currentUser.getEmail(),
-                    currentUser.getName(),
-                    role
+        System.out.println("Refresh token: " + refreshToken);
+        this.userService.updateUserToken(refreshToken, loginDTO.getUsername());
 
-            );
-            res.setUser(userLogin);
-        }
-        String access_token = this.securityUtil.createAccessToken(authentication.getName(), res);
-        res.setAccessToken(access_token);
-        // create refesh token
-        String refresh_token = this.securityUtil.createRefreshToken(loginDTO.getUsername(), res);
-        // update user
-        this.userService.updateUserToken(refresh_token, loginDTO.getUsername());
-        // setCookie
-        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refresh_token)
+//set cookies
+        ResponseCookie resCookies = ResponseCookie.from("refresh_token", refreshToken)
                 .httpOnly(true)
+                .secure(true)
                 .path("/")
                 .maxAge(refreshTokenExpiration)
+//                .domain() // website
                 .build();
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(res);
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookies.toString()).body(res);
     }
-//
-//    @PostMapping("/auth/login")
-//    @ApiMessage("Login success")
-//    public ResponseEntity<ResponseLoginDTO> login(@RequestBody @Valid RequestLoginDTO loginDTO) {
-////        Nap username va password vao authentication
-//        UsernamePasswordAuthenticationToken authenticationToken =
-//                new UsernamePasswordAuthenticationToken(loginDTO.getUsername()
-//                        , loginDTO.getPassword());
-////        xác thực người dùng => cần viết hàm loadUserByUsername
-//        Authentication authentication = this.authenticationManagerBuider.getObject().authenticate(authenticationToken);
-////        set thông tin đăng nhập vào context để sau này xài
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-////       create a token
-//        User currentUserDB = this.userService.findByEmail(loginDTO.getUsername());
-//        ResponseLoginDTO res = new ResponseLoginDTO();
-//        ResponseLoginDTO.UserLogin userLogin = new ResponseLoginDTO.UserLogin(
-//                currentUserDB.getId(),
-//                currentUserDB.getEmail(),
-//                currentUserDB.getName(),
-//                currentUserDB.getRole());
-//        res.setUser(userLogin);
-////        create access token
-//        String access_token = this.securityUtil.createAccessToken(authentication.getName(), res);
-//        res.setAccessToken(access_token);
-////        create refresh token
-//        String refreshToken = this.securityUtil.createRefreshToken(loginDTO.getUsername(), res);
-//
-//        System.out.println("Refresh token: " + refreshToken);
-//        this.userService.updateUserToken(refreshToken, loginDTO.getUsername());
-//
-////set cookies
-//        ResponseCookie resCookies = ResponseCookie.from("refresh_token", refreshToken)
-//                .httpOnly(true)
-//                .secure(true)
-//                .path("/")
-//                .maxAge(refreshTokenExpiration)
-////                .domain() // website
-//                .build();
-//        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookies.toString()).body(res);
-//    }
 
     @GetMapping("/auth/account")
     @ApiMessage("Get account success")
@@ -132,7 +92,7 @@ public class AuthController {
             userLogin.setEmail(currentUser.getEmail());
             userLogin.setId(currentUser.getId());
             userLogin.setName(currentUser.getName());
-//            userLogin.setRole(currentUser.getRole());
+            userGetAccount.setUser(userLogin);
         }
         return ResponseEntity.ok().body(userGetAccount);
     }
@@ -141,10 +101,10 @@ public class AuthController {
     @ApiMessage("get user by refresh token")
     public ResponseEntity<ResponseLoginDTO> getRefreshToken(
             @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token) throws Exception {
-        if (refresh_token.equals("abc")) {
+    if(refresh_token.equals("abc")){
             throw new Exception("Không có cookies");
 
-        }
+    }
         //        check valid
         Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refresh_token);
         String email = decodedToken.getSubject(); //Lấy ở Subject
@@ -159,12 +119,10 @@ public class AuthController {
         ResponseLoginDTO.UserLogin userLogin = new ResponseLoginDTO.UserLogin(
                 currentUserDB.getId(),
                 currentUserDB.getEmail(),
-                currentUserDB.getName()
-                , currentUserDB.getRole()
-        );
+                currentUserDB.getName());
         res.setUser(userLogin);
 //        create access token
-        String accessToken = this.securityUtil.createAccessToken(email, res);
+        String accessToken = this.securityUtil.createAccessToken(email, userLogin);
         res.setAccessToken(accessToken);
 //        create refresh token
         String new_refreshToken = this.securityUtil.createRefreshToken(email, res);
@@ -180,13 +138,13 @@ public class AuthController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, resCookies.toString()).body(res);
     }
 
-    //    logout
+//    logout
     @PostMapping("/auth/logout")
     @ApiMessage("Logout success")
-    public ResponseEntity<Void> logOut() throws Exception {
-        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
-        if (email.isEmpty()) {
-            throw new Exception("Token không hợp lê");
+    public ResponseEntity<Void> logOut( ) throws Exception {
+        String email= SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+        if(email.isEmpty()){
+            throw  new Exception("Token không hợp lê");
         }
         this.userService.updateUserToken(null, email);
 
