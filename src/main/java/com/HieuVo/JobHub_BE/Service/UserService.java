@@ -5,7 +5,7 @@ import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseCreateUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseUpdateUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseUserDTO;
 import com.HieuVo.JobHub_BE.Model.Company;
-import com.HieuVo.JobHub_BE.repository.CompanyRepository;
+import com.HieuVo.JobHub_BE.Model.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -21,19 +21,20 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+private final RoleService roleService;
+    private final CompanyService companyService;
 
-    private final CompanyRepository companyRepository;
-
-    public UserService(UserRepository userRepository, CompanyRepository companyRepository) {
+    public UserService(UserRepository userRepository, CompanyService companyService,
+                       RoleService roleService)  {
         this.userRepository = userRepository;
-        this.companyRepository = companyRepository;
+        this.roleService = roleService;
+        this.companyService = companyService;
     }
 
     //    begin convert to DTO
     public ResponseUserDTO convertToResUserDTO(User user) {
         ResponseUserDTO res = new ResponseUserDTO();
         ResponseUserDTO.CompanyUser companyUser = new ResponseUserDTO.CompanyUser();
-
         res.setId(user.getId());
         res.setEmail(user.getEmail());
         res.setGender(user.getGender());
@@ -42,14 +43,11 @@ public class UserService {
         res.setName(user.getName());
         res.setCreatedAt(user.getCreatedAt());
         res.setUpdatedAt(user.getUpdatedAt());
-
         if (user.getCompany() != null) {
             companyUser.setId(user.getCompany().getId());
             companyUser.setName(user.getCompany().getName());
-
             res.setCompany(companyUser);
         }
-
         return res;
     }
 
@@ -100,10 +98,23 @@ public class UserService {
     }
 
     public User handleCreateUser(User user) {
+        System.out.printf("compa ny: %s", user.getCompany());
         if (user.getCompany() != null) {
-            Optional<Company> companyOptional = this.companyRepository.findById(user.getCompany().getId());
+            Company company = this.companyService.getCompanyById(user.getCompany().getId());
+            if (company != null) {
+                user.setCompany(company);
+            } else {
+                user.setCompany(null);
+            }
 
-            user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+        }
+        if (user.getRole() != null) {
+            Role role = this.roleService.getRoleById(user.getRole().getId());
+            if (role != null) {
+                user.setRole(role);
+            } else {
+                user.setRole(null);
+            }
         }
         return this.userRepository.save(user);
 
@@ -158,21 +169,34 @@ public class UserService {
     }
 
     public User handleUpdateUser(User user) {
-        User newUser = null;
-        User currentUser = this.handleFetchUserById(user.getId());
+        User currentUser = this.userRepository.getById(user.getId());
         if (currentUser != null) {
-            currentUser.setAddress(user.getAddress());
-            currentUser.setGender(user.getGender());
             currentUser.setAge(user.getAge());
             currentUser.setName(user.getName());
-            if (currentUser.getCompany() != null) {
-                Optional<Company> companyOptional = this.companyRepository.findById(currentUser.getCompany().getId());
-                currentUser.setCompany(companyOptional.orElse(null));
+            currentUser.setAddress(user.getAddress());
+            currentUser.setGender(user.getGender());
+
+            if (user.getCompany() != null) {
+                Company company = this.companyService.getCompanyById(user.getCompany().getId());
+                if (company != null) {
+                    currentUser.setCompany(company);
+                } else {
+                    currentUser.setCompany(null);
+                }
             }
-            newUser = this.userRepository.save(currentUser);
+            if (user.getRole() != null) {
+                Role role = this.roleService.getRoleById(user.getRole().getId());
+                if (role != null) {
+                    currentUser.setRole(role);
+                } else {
+                    currentUser.setRole(null);
+                }
+            }
+            currentUser = this.userRepository.save(currentUser);
         }
-        return newUser;
+        return currentUser;
     }
+
     public User findByEmail(String email) {
         return this.userRepository.findByEmail(email);
     }

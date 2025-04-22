@@ -77,13 +77,16 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
+        String[] allowTest={"/storage/**","/","/api/v1/auth/**"
+                ,"/api/v1/companies/**","/api/v1/jobs/**"}; // test
         http
+
 
                 .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults()) // -> mình config ở file CorsConfig
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers("/api/v1/auth/login/**", "/storage/**","/").permitAll()
+                                .requestMatchers(allowTest).permitAll()
                                 .anyRequest().authenticated()
 //                 .anyRequest().permitAll()
                 )

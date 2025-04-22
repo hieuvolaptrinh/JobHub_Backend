@@ -4,7 +4,9 @@ import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseCreateUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseUpdateUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseUserDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
+import com.HieuVo.JobHub_BE.Model.Company;
 import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
+import com.HieuVo.JobHub_BE.repository.CompanyRepository;
 import com.turkraft.springfilter.boot.Filter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,10 +24,12 @@ public class UserController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final CompanyRepository companyRepository;
 
-    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder, CompanyRepository companyRepository) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
+        this.companyRepository = companyRepository;
     }
 
 
@@ -36,6 +40,9 @@ public class UserController {
         if (isEmailExist) {
             throw new Exception("Email " + user.getEmail() + " da ton tai, vui long su dung email khac");
         }
+        System.out.println("User: " + user.toString());
+        Company company = companyRepository.findById(user.getCompany().getId())
+                .orElseThrow(() -> new Exception("Company not found"));
         String hashPassword = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(hashPassword);
         User newUser = this.userService.handleCreateUser(user);

@@ -50,13 +50,18 @@ public class User {
     private String updatedBy;
 
     @ManyToOne
-    @JsonIgnore
+//    @JsonIgnore
     @JoinColumn(name = "company_id")
     private Company company;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Resume> resume;
+
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @PreUpdate
     public void handleBeforeUpdate() {

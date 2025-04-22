@@ -2,6 +2,7 @@ package com.HieuVo.JobHub_BE.controller;
 
 import com.HieuVo.JobHub_BE.DTO.Response.Job.ResponseCreateJobDTO;
 import com.HieuVo.JobHub_BE.DTO.Response.ResultPaginationDTO;
+import com.HieuVo.JobHub_BE.DTO.Response.Resume.ResponseUpdateResumeDTO;
 import com.HieuVo.JobHub_BE.Util.Error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
 import org.springframework.data.domain.Pageable;
@@ -33,12 +34,12 @@ public class JobController {
 
     @PutMapping("/jobs")
     @ApiMessage("Update new job successed")
-    public ResponseEntity<ResponseCreateJobDTO> updateJobs(@RequestBody Job job) throws IdInvalidException {
+    public ResponseEntity<ResponseUpdateResumeDTO> updateJobs(@RequestBody Job job) throws IdInvalidException {
         Job currentJob = this.jobService.getJobById(job.getId());
         if (currentJob == null) {
             throw new IdInvalidException("Job not found");
         }
-        return ResponseEntity.ok().body(this.jobService.updateJob(job));
+        return ResponseEntity.ok().body(this.jobService.updateJob(job,currentJob));
     }
 
     @DeleteMapping("/jobs/{id}")
