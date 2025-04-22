@@ -1,7 +1,7 @@
 package com.HieuVo.JobHub_BE.config;
 
 import com.HieuVo.JobHub_BE.DTO.Response.RestResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,11 +19,7 @@ import java.util.Optional;
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final AuthenticationEntryPoint delegate = new BearerTokenAuthenticationEntryPoint();
 
-    private final ObjectMapper mapper;
 
-    public CustomAuthenticationEntryPoint(ObjectMapper mapper) {
-        this.mapper = mapper;
-    }
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
@@ -40,6 +36,5 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         res.setError(errorMessage);
         res.setMessage("Token khong hop le (het han, khong dung dinh dang, hoac khong truyen JWT o header), ....");
 
-        mapper.writeValue(response.getWriter(), res);
     }
 }
