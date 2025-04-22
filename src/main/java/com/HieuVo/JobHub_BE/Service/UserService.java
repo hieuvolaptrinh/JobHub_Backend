@@ -21,17 +21,17 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-private final RoleService roleService;
+    private final RoleService roleService;
     private final CompanyService companyService;
 
     public UserService(UserRepository userRepository, CompanyService companyService,
-                       RoleService roleService)  {
+            RoleService roleService) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.companyService = companyService;
     }
 
-    //    begin convert to DTO
+    // begin convert to DTO
     public ResponseUserDTO convertToResUserDTO(User user) {
         ResponseUserDTO res = new ResponseUserDTO();
         ResponseUserDTO.CompanyUser companyUser = new ResponseUserDTO.CompanyUser();
@@ -48,6 +48,13 @@ private final RoleService roleService;
             companyUser.setName(user.getCompany().getName());
             res.setCompany(companyUser);
         }
+
+        if(user.getRole() != null) {
+            ResponseUserDTO.RoleUser roleUser = new ResponseUserDTO.RoleUser();
+            roleUser.setId(user.getRole().getId());
+            roleUser.setName(user.getRole().getName());
+            res.setRole(roleUser);
+        }
         return res;
     }
 
@@ -61,7 +68,7 @@ private final RoleService roleService;
         res.setUpdatedAt(user.getUpdatedAt());
         res.setGender(user.getGender());
         res.setAddress(user.getAddress());
-//
+        //
         if (user.getCompany() != null) {
             companyUser.setId(user.getCompany().getId());
             companyUser.setName(user.getCompany().getName());
@@ -92,13 +99,12 @@ private final RoleService roleService;
         return res;
     }
 
-    //    end convert to DTO
+    // end convert to DTO
     public boolean checkEmailExist(String email) {
         return this.userRepository.existsByEmail(email);
     }
 
     public User handleCreateUser(User user) {
-        System.out.printf("compa ny: %s", user.getCompany());
         if (user.getCompany() != null) {
             Company company = this.companyService.getCompanyById(user.getCompany().getId());
             if (company != null) {
@@ -106,6 +112,8 @@ private final RoleService roleService;
             } else {
                 user.setCompany(null);
             }
+        } else {
+            user.setCompany(null);
 
         }
         if (user.getRole() != null) {
@@ -136,36 +144,19 @@ private final RoleService roleService;
 
     public ResultPaginationDTO handleFetchAllUser(Specification<User> spec, Pageable pageable) {
         Page<User> pageUser = this.userRepository.findAll(spec, pageable);
-
+        ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
-        ResultPaginationDTO result = new ResultPaginationDTO();
         meta.setPage(pageable.getPageNumber() + 1);
-        meta.setPageSize(pageable.getPageSize());
-        meta.setTotal(pageUser.getTotalElements());
         meta.setPages(pageUser.getTotalPages());
-        result.setMeta(meta);
+        meta.setTotal(pageUser.getTotalElements());
+        rs.setMeta(meta);
+        List<ResponseUserDTO> listUser = pageUser.getContent().stream().map(
+                item -> this.convertToResUserDTO(item)
+                )
+                .collect(Collectors.toList());
+        rs.setResult(listUser);
 
-
-        List<ResponseUserDTO> listResUserDto = pageUser.getContent()
-                .stream().map(item -> new ResponseUserDTO(
-                        item.getId(),
-                        item.getEmail(),
-                        item.getName(),
-                        item.getGender(),
-                        item.getAddress(),
-                        item.getAge(),
-                        item.getUpdatedAt(),
-                        item.getCreatedAt(),
-                        new ResponseUserDTO.CompanyUser(
-                                item.getCompany() != null ? item.getCompany().getId() : 0,
-                                item.getCompany() != null ? item.getCompany().getName() : null
-                        )
-                )).collect(Collectors.toList());
-
-        result.setResult(listResUserDto);
-        result.setResult(pageUser);
-
-        return result;
+        return rs;
     }
 
     public User handleUpdateUser(User user) {
@@ -201,7 +192,7 @@ private final RoleService roleService;
         return this.userRepository.findByEmail(email);
     }
 
-    //    update user token
+    // update user token
     public void updateUserToken(String token, String email) {
         System.out.println("updateUserToken: " + token);
         System.out.println();

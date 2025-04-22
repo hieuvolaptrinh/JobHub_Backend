@@ -25,23 +25,23 @@ public class ResponseUserDTO {
     private Instant createdAt;
     private CompanyUser company;
 
+    private RoleUser role;
 
-    public ResponseUserDTO(long id, @NotBlank(message = "Email is required") String email, String name, GenderEnum gender, String address, Integer age, Instant updatedAt, Instant createdAt) {
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.age = age;
-        this.address = address;
-        this.gender = gender;
-        this.name = name;
-        this.email = email;
-        this.id = id;
-    }
 
     @Setter
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CompanyUser {
+        private long id;
+        private String name;
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class RoleUser {
         private long id;
         private String name;
     }

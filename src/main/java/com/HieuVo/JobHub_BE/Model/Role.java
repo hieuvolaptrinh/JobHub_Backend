@@ -1,9 +1,8 @@
 package com.HieuVo.JobHub_BE.Model;
 
-
 import com.HieuVo.JobHub_BE.Util.SecurityUtil;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -25,19 +24,22 @@ public class Role {
     private String name;
     private String description;
     private boolean active;
+
+    @Expose(serialize = false)
     private Instant createdAt;
     private String createdBy;
+
+    @Expose(serialize = false)
     private Instant updatedAt;
     private String updatedBy;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"roles"})
-    @JoinTable(name = "permission_role", joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id"))
+    @SerializedName("permissions")
+    @JoinTable(name = "permission_role", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private List<Permission> permissions;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @Expose(serialize = false)
     List<User> users;
 
     @PrePersist
