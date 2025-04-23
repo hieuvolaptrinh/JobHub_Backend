@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-private final RoleService roleService;
+    private final RoleService roleService;
     private final CompanyService companyService;
 
     public UserService(UserRepository userRepository, CompanyService companyService,
-                       RoleService roleService)  {
+                       RoleService roleService) {
         this.userRepository = userRepository;
         this.roleService = roleService;
         this.companyService = companyService;
@@ -34,20 +34,24 @@ private final RoleService roleService;
     //    begin convert to DTO
     public ResponseUserDTO convertToResUserDTO(User user) {
         ResponseUserDTO res = new ResponseUserDTO();
+        ResponseUserDTO.RoleUser roleUser = new ResponseUserDTO.RoleUser();
         ResponseUserDTO.CompanyUser companyUser = new ResponseUserDTO.CompanyUser();
-        res.setId(user.getId());
-        res.setEmail(user.getEmail());
-        res.setGender(user.getGender());
-        res.setAge(user.getAge());
-        res.setAddress(user.getAddress());
-        res.setName(user.getName());
-        res.setCreatedAt(user.getCreatedAt());
-        res.setUpdatedAt(user.getUpdatedAt());
         if (user.getCompany() != null) {
             companyUser.setId(user.getCompany().getId());
             companyUser.setName(user.getCompany().getName());
             res.setCompany(companyUser);
         }
+        if (user.getRole() != null) {
+            roleUser.setId(user.getRole().getId());
+            roleUser.setName(user.getRole().getName());
+            res.setRole(roleUser);
+        }
+        res.setAge(user.getAge());
+        res.setCreatedAt(user.getCreatedAt());
+        res.setEmail(user.getEmail());
+        res.setName(user.getName());
+        res.setGender(user.getGender());
+        res.setUpdatedAt(user.getUpdatedAt());
         return res;
     }
 
@@ -136,36 +140,17 @@ private final RoleService roleService;
 
     public ResultPaginationDTO handleFetchAllUser(Specification<User> spec, Pageable pageable) {
         Page<User> pageUser = this.userRepository.findAll(spec, pageable);
-
+        ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();
-        ResultPaginationDTO result = new ResultPaginationDTO();
         meta.setPage(pageable.getPageNumber() + 1);
-        meta.setPageSize(pageable.getPageSize());
-        meta.setTotal(pageUser.getTotalElements());
         meta.setPages(pageUser.getTotalPages());
-        result.setMeta(meta);
+        meta.setTotal(pageUser.getTotalElements());
+        rs.setMeta(meta);
+        List<ResponseUserDTO> listUser = pageUser.getContent().stream().map(item -> this.convertToResUserDTO(item))
+                .collect(Collectors.toList());
+        rs.setResult(listUser);
 
-
-        List<ResponseUserDTO> listResUserDto = pageUser.getContent()
-                .stream().map(item -> new ResponseUserDTO(
-                        item.getId(),
-                        item.getEmail(),
-                        item.getName(),
-                        item.getGender(),
-                        item.getAddress(),
-                        item.getAge(),
-                        item.getUpdatedAt(),
-                        item.getCreatedAt(),
-                        new ResponseUserDTO.CompanyUser(
-                                item.getCompany() != null ? item.getCompany().getId() : 0,
-                                item.getCompany() != null ? item.getCompany().getName() : null
-                        )
-                )).collect(Collectors.toList());
-
-        result.setResult(listResUserDto);
-        result.setResult(pageUser);
-
-        return result;
+        return rs;
     }
 
     public User handleUpdateUser(User user) {

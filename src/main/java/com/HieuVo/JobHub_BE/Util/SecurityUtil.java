@@ -47,25 +47,27 @@ public class SecurityUtil {
         return new SecretKeySpec(keyBytes, 0, keyBytes.length, JWT_ALGORITHM.getName());
     }
 
-    public String createAccessToken(String email, ResponseLoginDTO.UserLogin dto) {
+
+    public String createAccessToken(String email, ResponseLoginDTO   loginDTO) {
+        ResponseLoginDTO.UserInsideToken userToken = new ResponseLoginDTO.UserInsideToken();
+        userToken.setId(loginDTO.getUser().getId());
+        userToken.setEmail(loginDTO.getUser().getEmail());
+        userToken.setName(loginDTO.getUser().getName());
         Instant now = Instant.now();
-        Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
-        List<String> listAuthorities = new ArrayList<>();
-        listAuthorities.add("ROLE_USER_CREATE");
-        listAuthorities.add("ROLE_USER_UPDATE");
-
-        // @formatter:off
-            JwtClaimsSet claims = JwtClaimsSet.builder()
-                    .issuedAt(now)
-                    .expiresAt(validity)
-                    .subject(email)
-                    .claim("user", dto)
-                    .claim("permission", listAuthorities)
-
-                    .build();
-            JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
-            return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,
-                    claims)).getTokenValue();
+        Instant validity = now.plus(accessTokenExpiration, ChronoUnit.SECONDS);
+        // hardcode permission
+        List<String> listAuthority = new ArrayList<String>();
+        listAuthority.add("ROLE_USER_CREATE");
+        listAuthority.add("ROLE_USER_UPDATE");
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuedAt(now)
+                .expiresAt(validity)
+                .subject(email)
+                .claim("user", userToken)
+                .claim("permission", listAuthority)
+                .build();
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 
     public String createRefreshToken(String email, ResponseLoginDTO dto) {
