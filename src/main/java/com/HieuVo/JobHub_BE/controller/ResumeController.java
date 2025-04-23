@@ -99,4 +99,6 @@ public class ResumeController {
         return ResponseEntity.ok().body(this.resumeService.fetchResumeByUser(pageable));
     }
 
+
+
 }

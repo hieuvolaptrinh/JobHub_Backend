@@ -29,7 +29,6 @@ import com.turkraft.springfilter.parser.FilterParser;
 import com.turkraft.springfilter.parser.node.FilterNode;
 
 
-
 @Service
 public class ResumeService {
     @Autowired
@@ -133,9 +132,15 @@ public class ResumeService {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
+        System.out.println("email: " + email);
+//        library
         FilterNode node = filterParser.parse("email='" + email + "'");
+        System.out.println(node);
         FilterSpecification<Resume> spec = filterSpecificationConverter.convert(node);
         Page<Resume> pageResume = this.resumeRepository.findAll(spec, pageable);
+        for( Resume resume : pageResume.getContent()){
+            System.out.println(resume.toString());
+        }
 
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta meta = new ResultPaginationDTO.Meta();

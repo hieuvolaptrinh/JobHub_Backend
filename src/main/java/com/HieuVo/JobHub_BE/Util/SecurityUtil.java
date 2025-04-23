@@ -5,7 +5,6 @@ import com.nimbusds.jose.util.Base64;
 import org.springframework.beans.factory.annotation.Value;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +19,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class SecurityUtil {
@@ -55,6 +53,7 @@ public class SecurityUtil {
         userToken.setName(loginDTO.getUser().getName());
         Instant now = Instant.now();
         Instant validity = now.plus(accessTokenExpiration, ChronoUnit.SECONDS);
+
         // hardcode permission
         List<String> listAuthority = new ArrayList<String>();
         listAuthority.add("ROLE_USER_CREATE");
@@ -70,21 +69,24 @@ public class SecurityUtil {
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 
-    public String createRefreshToken(String email, ResponseLoginDTO dto) {
-        Instant now = Instant.now();
-        Instant validity = now.plus(this.refreshTokenExpiration, ChronoUnit.SECONDS);
+    public String createRefreshToken(String email, ResponseLoginDTO loginDTO) {
+        ResponseLoginDTO.UserInsideToken userToken = new ResponseLoginDTO.UserInsideToken();
+        userToken.setId(loginDTO.getUser().getId());
+        userToken.setEmail(loginDTO.getUser().getEmail());
+        userToken.setName(loginDTO.getUser().getName());
 
-//   Payload
+        Instant now = Instant.now();
+        Instant validity = now.plus(refreshTokenExpiration, ChronoUnit.SECONDS);
+
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(email)
-                .claim("user", dto.getUser())
+                .claim("user", userToken)
 
                 .build();
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
-        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader,
-                claims)).getTokenValue();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 
 
