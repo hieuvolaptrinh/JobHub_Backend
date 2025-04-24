@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthen
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-
 import java.io.IOException;
 import java.util.Optional;
 
@@ -19,10 +18,9 @@ import java.util.Optional;
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final AuthenticationEntryPoint delegate = new BearerTokenAuthenticationEntryPoint();
 
-
-
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request, HttpServletResponse response,
+            AuthenticationException authException) throws IOException, ServletException {
         this.delegate.commence(request, response, authException);
         response.setContentType("application/json;charset=UTF-8");
 

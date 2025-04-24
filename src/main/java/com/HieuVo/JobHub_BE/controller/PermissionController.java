@@ -41,9 +41,9 @@ public class PermissionController {
         if (this.permissionService.getPermissionById(permission.getId()) == null) {
             throw new IdInvalidException("Permission is not exist");
         }
-        // if (this.permissionService.isPermissionExist(permission)) {
-        // throw new IdInvalidException("Permission is already exist");
-        // }
+         if (this.permissionService.isPermissionExist(permission)) {
+         throw new IdInvalidException("Permission is already exist");
+         }
         return ResponseEntity.ok().body(this.permissionService.updatePermission(permission));
     }
 

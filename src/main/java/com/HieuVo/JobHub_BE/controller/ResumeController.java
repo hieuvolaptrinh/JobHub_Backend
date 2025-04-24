@@ -88,8 +88,24 @@ public class ResumeController {
     @ApiMessage("Get all resume success")
     public ResponseEntity<ResultPaginationDTO> getAllResume(@Filter Specification<Resume> specification,
                                                             Pageable pageable) {
-
-        return ResponseEntity.ok().body(this.resumeService.getAllResume(specification, pageable));
+        List<Long> listJobId = null;
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
+                ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        User currentUser = this.userService.findByEmail(email);
+        if (currentUser != null) {
+            Company userCompany = currentUser.getCompany();
+            if (userCompany != null) {
+                List<Job> companyJobs = userCompany.getJobs();
+                if (companyJobs != null && companyJobs.size() > 0) {
+                    listJobId = companyJobs.stream().map(x -> x.getId()).collect(Collectors.toList());
+                }
+            }
+        }
+        Specification<Resume> jobSpecification = filterSpecificationConverter
+                .convert(filterBuilder.field("job").in(filterBuilder.input(listJobId)).get());
+        Specification<Resume> finalSpec = jobSpecification.and(specification);
+        return ResponseEntity.ok().body(this.resumeService.getAllResume(finalSpec, pageable));
     }
 
     @PostMapping("/resumes/by-user")

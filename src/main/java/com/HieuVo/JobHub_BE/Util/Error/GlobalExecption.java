@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import com.HieuVo.JobHub_BE.DTO.Response.RestResponse;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,5 +49,31 @@ public class GlobalExecption {
         res.setMessage(errors.size() > 1 ? errors : errors.get(0)); // nếu có một lỗi thì String
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
+    @ExceptionHandler(value = { NoResourceFoundException.class })
+    public ResponseEntity<RestResponse<Object>> handleNotFoundException(Exception e) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatus(HttpStatus.NOT_FOUND.value());
+        res.setError("404 not found");
+        res.setMessage(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body(res);
+    }
+
+    @ExceptionHandler(StorageException.class)
+    public ResponseEntity<RestResponse<Object>> handleFileUploadException(StorageException ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatus(HttpStatus.BAD_REQUEST.value());
+        res.setMessage(ex.getMessage());
+        res.setError("Exception occurred during file upload.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
+    }
+
+    @ExceptionHandler(PermissionException.class)
+    public ResponseEntity<RestResponse<Object>> handlePermissionException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<>();
+        res.setStatus(HttpStatus.FORBIDDEN.value());
+        res.setMessage(ex.getMessage());
+        res.setError("403 FORBIDDEN");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(res);
     }
 }

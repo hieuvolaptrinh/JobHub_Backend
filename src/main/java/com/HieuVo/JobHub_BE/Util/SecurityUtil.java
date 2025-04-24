@@ -46,7 +46,7 @@ public class SecurityUtil {
     }
 
 
-    public String createAccessToken(String email, ResponseLoginDTO   loginDTO) {
+    public String createAccessToken(String email, ResponseLoginDTO loginDTO) {
         ResponseLoginDTO.UserInsideToken userToken = new ResponseLoginDTO.UserInsideToken();
         userToken.setId(loginDTO.getUser().getId());
         userToken.setEmail(loginDTO.getUser().getEmail());
@@ -115,42 +115,15 @@ public class SecurityUtil {
                 .map(authentication -> (String) authentication.getCredentials());
     }
 
-public Jwt checkValidRefreshToken(String token){
-    NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
-            getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
-    try{
-        System.out.println("refresh token: " + token+" hợp lệ");
-        return jwtDecoder.decode(token);
+    public Jwt checkValidRefreshToken(String token) {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
+                getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
+        try {
+            System.out.println("refresh token: " + token + " hợp lệ");
+            return jwtDecoder.decode(token);
+        } catch (Exception e) {
+            System.out.println(">>>>>>>>>>>> referesh token is invalid" + e.getMessage());
+            throw e;
+        }
     }
-    catch (Exception e){
-      System.out.println(">>>>>>>>>>>> referesh token is invalid" + e.getMessage());
-        throw e;
-    }
-}
-
-    // public static boolean isAuthenticated() {
-    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //     return authentication != null && getAuthorities(authentication).noneMatch(AuthoritiesConstants.ANONYMOUS::equals);
-    // }
-
-    // public static boolean hasCurrentUserAnyOfAuthorities(String... authorities) {
-    //     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //     return (
-    //         authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(authorities).contains(authority))
-    //     );
-    // }
-
-
-    // public static boolean hasCurrentUserNoneOfAuthorities(String... authorities) {
-    //     return !hasCurrentUserAnyOfAuthorities(authorities);
-    // }
-
-    // public static boolean hasCurrentUserThisAuthority(String authority) {
-    //     return hasCurrentUserAnyOfAuthorities(authority);
-    // }
-
-    // private static Stream<String> getAuthorities(Authentication authentication) {
-    //     return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority);
-    // }
-
 }

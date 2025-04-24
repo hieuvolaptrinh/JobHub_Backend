@@ -1,12 +1,16 @@
 package com.HieuVo.JobHub_BE.controller;
 
+import com.HieuVo.JobHub_BE.DTO.Response.User.ResponseCreateUserDTO;
+import com.HieuVo.JobHub_BE.Model.Company;
 import com.HieuVo.JobHub_BE.Model.User;
 import com.HieuVo.JobHub_BE.Service.UserService;
 import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
 import com.HieuVo.JobHub_BE.Util.Error.IdInvalidException;
+import com.HieuVo.JobHub_BE.repository.CompanyRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 
@@ -14,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +36,19 @@ public class AuthController {
 
         private final SecurityUtil securityUtil;
         private final UserService userService;
+        private final CompanyRepository companyRepository;
+        private final PasswordEncoder passwordEncoder;
+
         @Value("${jwt.refresh-token-validity-in-seconds}")
         private long refreshTokenExpiration;
 
         public AuthController(AuthenticationManagerBuilder authenticationManager, SecurityUtil securityUtil,
-                        UserService userService) {
+                              UserService userService, CompanyRepository companyRepository, PasswordEncoder passwordEncoder) {
                 this.authenticationManagerBuider = authenticationManager;
                 this.userService = userService;
                 this.securityUtil = securityUtil;
+                this.companyRepository = companyRepository;
+                this.passwordEncoder = passwordEncoder;
         }
 
         @PostMapping("/auth/login")
@@ -220,5 +230,21 @@ public class AuthController {
                                 .ok()
                                 .header(HttpHeaders.SET_COOKIE, deleteCookie.toString())
                                 .build();
+        }
+
+        @PostMapping("/auth/register")
+        @ApiMessage("create a UserLogin success")
+        public ResponseEntity<ResponseCreateUserDTO> createUser(@RequestBody User user) throws Exception {
+                boolean isEmailExist = this.userService.checkEmailExist(user.getEmail());
+                if (isEmailExist) {
+                        throw new Exception("Email " + user.getEmail() + " da ton tai, vui long su dung email khac");
+                }
+                System.out.println("User: " + user.toString());
+                Company company = companyRepository.findById(user.getCompany().getId())
+                        .orElseThrow(() -> new Exception("Company not found"));
+                String hashPassword = passwordEncoder.encode(user.getPassword());
+                user.setPassword(hashPassword);
+                User newUser = this.userService.handleCreateUser(user);
+                return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(newUser));
         }
 }

@@ -6,6 +6,7 @@ import com.nimbusds.jose.util.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -50,7 +51,6 @@ public class SecurityConfiguration {
                 getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
         return token -> {
             try {
-
                 return jwtDecoder.decode(token);
             } catch (JwtException e) {
                 throw new JwtException("Token is invalid");
@@ -75,27 +75,41 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,
-                                           CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
-        String[] allowTest={"/storage/**","/","/api/v1/auth/**"
-                ,"/api/v1/companies/**","/api/v1/jobs/**"}; // test
+    public SecurityFilterChain filterChain(
+            HttpSecurity http,
+            CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
+        String[] whiteList = {
+                "/",
+                "/api/v1/auth/login", "/api/v1/auth/refresh", "/api/v1/auth/register",
+                "/storage/**",
+                "/api/v1/email/**",
+                "/v3/api-docs/**",
+                "/swagger-ui/**",
+                "/swagger-ui.html"
+        };
         http
-
-
                 .csrf(c -> c.disable())
-                .cors(Customizer.withDefaults()) // -> mình config ở file CorsConfig
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers(allowTest).permitAll()
-                                .anyRequest().authenticated()
-//                 .anyRequest().permitAll()
-                )
-                // tự tách Bearer token ra khỏi header
+                                .requestMatchers(whiteList).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/skills/**").permitAll()
+                                .anyRequest().authenticated())
+                // .anyRequest().permitAll())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
-                        .authenticationEntryPoint(customAuthenticationEntryPoint)) // 401
+                        .authenticationEntryPoint(customAuthenticationEntryPoint))
+                .exceptionHandling(
+                        exceptions -> exceptions
+                                .authenticationEntryPoint(customAuthenticationEntryPoint) // 401
+                                .accessDeniedHandler(new BearerTokenAccessDeniedHandler())) // 403
+
                 .formLogin(f -> f.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
         return http.build();
     }
+
 
 }
