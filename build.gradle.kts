@@ -25,6 +25,9 @@ repositories {
 }
 
 dependencies {
+
+//	mail
+	implementation("org.springframework.boot:spring-boot-starter-mail:3.2.4")
 	implementation ("com.google.code.gson:gson:2.10.1")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-security")
