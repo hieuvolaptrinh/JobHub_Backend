@@ -94,9 +94,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(
                         authz -> authz
                                 .requestMatchers(whiteList).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/companies/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/jobs/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/v1/skills/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/companies/**","/api/v1/skills/**","/api/v1/jobs/**").permitAll()
                                 .anyRequest().authenticated())
                 // .anyRequest().permitAll())
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())

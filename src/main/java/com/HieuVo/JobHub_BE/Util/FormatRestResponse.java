@@ -4,6 +4,7 @@ package com.HieuVo.JobHub_BE.Util;
 import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
@@ -33,10 +34,16 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 
         RestResponse<Object> restResponse = new RestResponse<Object>();
         restResponse.setStatus(status);
-        if (body instanceof String ||
-                body instanceof RestResponse) {
+        String path = request.getURI().getPath();
+
+        if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
             return body;
         }
+
+        if (body instanceof RestResponse || body instanceof String || body instanceof Resource) {
+            return body;
+        }
+
 
 //        case error
         if (status >= 400) {

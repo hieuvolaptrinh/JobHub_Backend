@@ -3,6 +3,7 @@ package com.HieuVo.JobHub_BE.controller;
 
 import com.HieuVo.JobHub_BE.Model.Subscriber;
 import com.HieuVo.JobHub_BE.Service.SubscriberService;
+import com.HieuVo.JobHub_BE.Util.Anotation.ApiMessage;
 import com.HieuVo.JobHub_BE.Util.Error.IdInvalidException;
 import com.HieuVo.JobHub_BE.Util.SecurityUtil;
 import jakarta.validation.Valid;
@@ -41,6 +42,7 @@ public class SubscriberController {
     }
 
     @PostMapping("/subscribers/skills")
+    @ApiMessage("Get subscriber's skills")
     public ResponseEntity<Subscriber> getSubscribersSkill() {
         String email = SecurityUtil.getCurrentUserLogin().isPresent() == true
                 ? SecurityUtil.getCurrentUserLogin().get()
